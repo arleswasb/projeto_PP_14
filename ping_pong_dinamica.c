@@ -13,21 +13,24 @@ int main(int argc, char** argv) {
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
 
-    // O programa deve ser executado com exatamente 2 processos
-    if (size != 2) {
+    // O programa deve ser executado com exatamente 2 processos e um argumento
+    if (size != 2 || argc < 2) {
         if (rank == 0) {
-            fprintf(stderr, "Este programa requer exatamente 2 processos para ser executado.\n");
+            fprintf(stderr, "Este programa requer exatamente 2 processos e um argumento para o numero de iteracoes.\n");
+            fprintf(stderr, "Uso: mpirun -np 2 ./ping_pong_mpi_dynamic <numero_de_iteracoes>\n");
         }
         MPI_Finalize();
         return 1;
     }
 
+    // Lê o número de iterações do argumento de linha de comando
+    int num_iterations = atoi(argv[1]);
+
     // Vetor de tamanhos de mensagem a serem testados, incluindo 4 MB
-    int message_sizes[] = {8, 128, 512, 1024, 4096, 16384, 65536, 131072, 262144, 524288, 1048576, 4194304};
+    int message_sizes[] = {8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144, 524288, 1048576, 2097152, 4194304};
     int num_sizes = sizeof(message_sizes) / sizeof(int);
     
-    // Número de trocas para cada tamanho de mensagem
-    int num_iterations = 1000;
+    printf("--- Executando com %d iteracoes ---\n", num_iterations);
 
     for (int i = 0; i < num_sizes; i++) {
         int current_size = message_sizes[i];
@@ -52,7 +55,7 @@ int main(int argc, char** argv) {
             double average_time_ms = (total_time / (2 * num_iterations)) * 1000;
             
             // Exibe os resultados
-            printf("Tamanho da Mensagem: %d bytes, Tempo Médio por troca: %f ms\n", current_size, average_time_ms);
+            printf("Tamanho da Mensagem: %d bytes, Tempo Medio por troca: %f ms\n", current_size, average_time_ms);
         } 
         
         // O processo 1 responde à comunicação
@@ -67,7 +70,6 @@ int main(int argc, char** argv) {
         
         free(send_buffer);
         free(recv_buffer);
-
     }
     
     // Finaliza o ambiente MPI
