@@ -10,4 +10,4 @@
 #srun ping_pong_mpi 
 
 #alternativa para casos em que srun não funciona:
-mpirun ping_pong_mpi
+mpirun -np 2 ping_pong_mpi
