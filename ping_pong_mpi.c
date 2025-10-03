@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
         return 1;
     }
 
-    // Vetor de tamanhos de mensagem a serem testados, incluindo 4 MB
+    // Vetor de tamanhos de mensagem a serem testados, incluindo 64 MB
     int message_sizes[] = {8, 128, 512, 1024, 4096, 16384, 65536, 131072, 262144, 524288, 1048576, 4194304, 8388608, 16777216, 33554432};
     int num_sizes = sizeof(message_sizes) / sizeof(int);
     
